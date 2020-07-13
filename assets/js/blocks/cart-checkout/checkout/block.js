@@ -247,6 +247,15 @@ const Checkout = ( { attributes, scrollToTop } ) => {
 								onChange={ setEmail }
 								required={ true }
 							/>
+							<CheckboxControl
+								className="wc-block-checkout__create-account"
+								label={ __(
+									'Create an account?',
+									'woo-gutenberg-products-block'
+								) }
+								checked={ false }
+								onChange={ () => {} }
+							/>
 						</FormStep>
 						{ needsShipping && (
 							<FormStep
