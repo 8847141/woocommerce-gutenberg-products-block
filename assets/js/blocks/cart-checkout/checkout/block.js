@@ -27,6 +27,7 @@ import {
 	useCheckoutContext,
 	useEditorContext,
 	useShippingDataContext,
+	useSignupDataContext,
 	useValidationContext,
 	StoreNoticesProvider,
 } from '@woocommerce/base-context';
@@ -128,6 +129,14 @@ const Checkout = ( { attributes, scrollToTop } ) => {
 		dispatchActions,
 	} = useCheckoutContext();
 	const { setOrderNotes } = dispatchActions;
+	const {
+		createAccount,
+		username,
+		password,
+		setCreateAccount,
+		setUsername,
+		setPassword,
+	} = useSignupDataContext();
 	const {
 		hasValidationErrors,
 		showAllValidationErrors,
@@ -253,6 +262,12 @@ const Checkout = ( { attributes, scrollToTop } ) => {
 							/>
 							{ CHECKOUT_ALLOWS_SIGNUP && (
 								<SignupForm
+									createAccount={ createAccount }
+									username={ username }
+									password={ password }
+									setCreateAccount={ setCreateAccount }
+									setUsername={ setUsername }
+									setPassword={ setPassword }
 									showUsernameField={
 										! SIGNUP_GENERATE_USERNAME
 									}
