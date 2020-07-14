@@ -2,7 +2,7 @@
  * External dependencies
  */
 import classnames from 'classnames';
-import { useMemo, useEffect } from '@wordpress/element';
+import { useMemo, useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import {
 	AddressForm,
@@ -12,7 +12,6 @@ import {
 	Policies,
 	ReturnToCartButton,
 	ShippingRatesControl,
-	SignupForm,
 } from '@woocommerce/base-components/cart-checkout';
 import { ValidatedTextInput } from '@woocommerce/base-components/text-input';
 import CheckboxControl from '@woocommerce/base-components/checkbox-control';
@@ -27,7 +26,6 @@ import {
 	useCheckoutContext,
 	useEditorContext,
 	useShippingDataContext,
-	useSignupDataContext,
 	useValidationContext,
 	StoreNoticesProvider,
 } from '@woocommerce/base-context';
@@ -54,8 +52,6 @@ import {
 	CHECKOUT_ALLOWS_GUEST,
 	CHECKOUT_ALLOWS_SIGNUP,
 	DISPLAY_CART_PRICES_INCLUDING_TAX,
-	SIGNUP_GENERATE_USERNAME,
-	SIGNUP_GENERATE_PASSWORD,
 } from '@woocommerce/block-settings';
 
 /**
@@ -130,14 +126,6 @@ const Checkout = ( { attributes, scrollToTop } ) => {
 	} = useCheckoutContext();
 	const { setOrderNotes } = dispatchActions;
 	const {
-		createAccount,
-		username,
-		password,
-		setCreateAccount,
-		setUsername,
-		setPassword,
-	} = useSignupDataContext();
-	const {
 		hasValidationErrors,
 		showAllValidationErrors,
 	} = useValidationContext();
@@ -173,6 +161,9 @@ const Checkout = ( { attributes, scrollToTop } ) => {
 			},
 		};
 	}, [ defaultAddressFields, attributes ] );
+
+	// Temporary :) - this will move to appropriate context.
+	const [ createAccount, setCreateAccount ] = useState( false );
 
 	const hasErrorsToDisplay =
 		checkoutIsIdle &&
@@ -261,18 +252,15 @@ const Checkout = ( { attributes, scrollToTop } ) => {
 								required={ true }
 							/>
 							{ CHECKOUT_ALLOWS_SIGNUP && (
-								<SignupForm
-									createAccount={ createAccount }
-									username={ username }
-									password={ password }
-									setCreateAccount={ setCreateAccount }
-									setUsername={ setUsername }
-									setPassword={ setPassword }
-									showUsernameField={
-										! SIGNUP_GENERATE_USERNAME
-									}
-									showPasswordField={
-										! SIGNUP_GENERATE_PASSWORD
+								<CheckboxControl
+									className="wc-block-checkout__create-account"
+									label={ __(
+										'Create an account?',
+										'woo-gutenberg-products-block'
+									) }
+									checked={ createAccount }
+									onChange={ ( value ) =>
+										setCreateAccount( value )
 									}
 								/>
 							) }
