@@ -1,9 +1,13 @@
 /**
  * External dependencies
  */
-import { switchUserToAdmin } from '@wordpress/e2e-test-utils';
+import { searchForBlock, switchUserToAdmin } from '@wordpress/e2e-test-utils';
 
-import { visitBlockPage } from '@woocommerce/blocks-test-utils';
+import {
+	visitBlockPage,
+	findElementWithText,
+	closeInserter,
+} from '@woocommerce/blocks-test-utils';
 
 const block = {
 	name: 'Checkout',
@@ -19,6 +23,18 @@ describe( `${ block.name } Block`, () => {
 	beforeAll( async () => {
 		await switchUserToAdmin();
 		await visitBlockPage( `${ block.name } Block` );
+	} );
+
+	it( 'can only be inserted once', async () => {
+		await searchForBlock( block.name );
+		const disabledInsertButton = await findElementWithText(
+			'button.editor-block-list-item-woocommerce-checkout',
+			block.name
+		);
+		expect(
+			await disabledInsertButton.evaluate( ( button ) => button.disabled )
+		).toBe( true );
+		await closeInserter();
 	} );
 
 	it( 'renders without crashing', async () => {
